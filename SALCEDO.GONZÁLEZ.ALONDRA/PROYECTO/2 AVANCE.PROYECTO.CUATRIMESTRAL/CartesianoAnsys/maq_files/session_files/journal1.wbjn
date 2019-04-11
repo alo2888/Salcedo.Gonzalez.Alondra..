@@ -1,0 +1,34 @@
+# encoding: utf-8
+# 2019 R1
+SetScriptVersion(Version="19.3.111")
+template1 = GetTemplate(
+    TemplateName="Modal",
+    Solver="ANSYS")
+system1 = template1.CreateSystem()
+system1.Delete()
+template2 = GetTemplate(TemplateName="Geometry")
+system2 = template2.CreateSystem()
+geometry1 = system2.GetContainer(ComponentName="Geometry")
+geometry1.Edit(IsSpaceClaimGeometry=True)
+template3 = GetTemplate(
+    TemplateName="Static Structural",
+    Solver="ANSYS")
+geometryComponent1 = system2.GetComponent(Name="Geometry")
+system3 = template3.CreateSystem(
+    ComponentsToShare=[geometryComponent1],
+    Position="Right",
+    RelativeTo=system2)
+Update()
+geometryComponent1.Update(AllDependencies=True)
+Update()
+geometry1.SetFile(
+    FilePath=GetAbsoluteUserPathName("Miguel/2019/Universidad Politécnica/maq.scdoc"),
+    PlugInName="SpaceClaim[21580]")
+geometry1.Edit(IsSpaceClaimGeometry=True)
+modelComponent1 = system3.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system3.GetContainer(ComponentName="Model")
+model1.Edit()
+geometry1.Exit()
+Save(Overwrite=True)
+model1.Exit()
